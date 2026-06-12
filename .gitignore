@@ -1,0 +1,9 @@
+# Temporary lock files
+.~lock.*
+~$*
+
+# Temporary text dumps used during development
+*.txt
+
+# PDF guides and resources
+*.pdf

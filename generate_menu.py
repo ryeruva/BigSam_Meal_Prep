@@ -64,7 +64,7 @@ def create_spring_hike_menu():
     
     ws_ov["A1"] = "Ohlone Wilderness Trail — Crew Meal Plan  ·  19 People  ·  6 Bear Cans"
     ws_ov["A1"].font = font_title
-    ws_ov["A2"] = "April 4–6, 2026  ·  Fremont → Lake Del Valle  ·  26.4 mi  ·  13 Scouts · 6 Adults  |  3 Scout cans (3 people) · 1 Scout can (4 people) · 2 Adult cans (3 people)"
+    ws_ov["A2"] = "July 25–27, 2026  ·  Fremont → Lake Del Valle  ·  26.4 mi  ·  13 Scouts · 6 Adults  |  3 Scout cans (3 people) · 1 Scout can (4 people) · 2 Adult cans (3 people)"
     ws_ov["A2"].font = font_subtitle
     
     # Canister Structure Table
@@ -108,9 +108,9 @@ def create_spring_hike_menu():
         cell.border = border_all
         
     schedule_data = [
-        ["Day 1", "Sat Apr 4", "Trailhead → Star's Rest", "10.92 mi", "+3,474 ft", "−2,272 ft", "Star's Rest", "Snacks · Lunch · Dinner · Dessert", "Creek (filter)", "Eat breakfast before leaving car"],
-        ["Day 2", "Sun Apr 5", "Star's Rest → Maggie's Half Acre", "5.82 mi", "+2,316 ft", "−410 ft", "Maggie's Half Acre", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Dry ridge — fill at camp", "Hardest climb day; cattle on trail"],
-        ["Day 3", "Mon Apr 6", "Maggie's Half Acre → Lake Del Valle", "9.69 mi", "+1,514 ft", "−4,249 ft", "Exit — Del Valle", "Bkfst · Snacks · Lunch", "Tap at park", "Mostly downhill; celebrate at Del Valle"],
+        ["Day 1", "Sat Jul 25", "Trailhead → Star's Rest", "10.92 mi", "+3,474 ft", "−2,272 ft", "Star's Rest", "Snacks · Lunch · Dinner · Dessert", "Creek (filter)", "Eat breakfast before leaving car"],
+        ["Day 2", "Sun Jul 26", "Star's Rest → Maggie's Half Acre", "5.82 mi", "+2,316 ft", "−410 ft", "Maggie's Half Acre", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Dry ridge — fill at camp", "Hardest climb day; cattle on trail"],
+        ["Day 3", "Mon Jul 27", "Maggie's Half Acre → Lake Del Valle", "9.69 mi", "+1,514 ft", "−4,249 ft", "Exit — Del Valle", "Bkfst · Snacks · Lunch", "Tap at park", "Mostly downhill; celebrate at Del Valle"],
         ["TOTALS", "", "", "26.43 mi", "+7,304 ft", "−6,931 ft", "", "", "", ""]
     ]
     
@@ -141,9 +141,9 @@ def create_spring_hike_menu():
         
     calorie_data = [
         ["Target (full active day)", "~2,750 kcal", "~3,750 kcal", "Sunday is the only full active day"],
-        ["Sat Apr 4 delivered", "='Meal Plan (Per Bear Can)'!F39", "='Meal Plan (Per Bear Can)'!H39", "Snacks + Lunch + Dinner + Dessert (no breakfast carried)"],
-        ["Sun Apr 5 delivered", "='Meal Plan (Per Bear Can)'!F89", "='Meal Plan (Per Bear Can)'!H89", "Bkfst + Snacks (incl. adult supplement) + Lunch + Dinner + Dessert"],
-        ["Mon Apr 6 delivered", "='Meal Plan (Per Bear Can)'!F114", "='Meal Plan (Per Bear Can)'!H114", "Bkfst + Snacks + Lunch"],
+        ["Sat Jul 25 delivered", "='Meal Plan (Per Bear Can)'!F39", "='Meal Plan (Per Bear Can)'!H39", "Snacks + Lunch + Dinner + Dessert (no breakfast carried)"],
+        ["Sun Jul 26 delivered", "='Meal Plan (Per Bear Can)'!F89", "='Meal Plan (Per Bear Can)'!H89", "Bkfst + Snacks (incl. adult supplement) + Lunch + Dinner + Dessert"],
+        ["Mon Jul 27 delivered", "='Meal Plan (Per Bear Can)'!F114", "='Meal Plan (Per Bear Can)'!H114", "Bkfst + Snacks + Lunch"],
         ["TRIP TOTAL", "='Meal Plan (Per Bear Can)'!F118", "='Meal Plan (Per Bear Can)'!H118", "3 days combined per person"]
     ]
     
@@ -267,10 +267,10 @@ def create_spring_hike_menu():
     # Main meal plan data
     # Saturday
     r = 4
-    write_subheader(ws_mp, r, "SAT APR 4 — BREAKFAST (Eaten at home before driving to trailhead)", fill_navy)
+    write_subheader(ws_mp, r, "SAT JUL 25 — BREAKFAST (Eaten at home before driving to trailhead)", fill_navy)
     
     r = 5
-    write_subheader(ws_mp, r, "SAT APR 4 — SNACKS (Handed out at trailhead)", fill_teal)
+    write_subheader(ws_mp, r, "SAT JUL 25 — SNACKS (Handed out at trailhead)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -365,7 +365,7 @@ def create_spring_hike_menu():
     
     # Saturday Lunch
     r += 1
-    write_subheader(ws_mp, r, "SAT APR 4 — LUNCH (NO COOK — trail charcuterie)", fill_teal)
+    write_subheader(ws_mp, r, "SAT JUL 25 — LUNCH (NO COOK — trail charcuterie)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -446,7 +446,7 @@ def create_spring_hike_menu():
     
     # Saturday Dinner
     r += 1
-    write_subheader(ws_mp, r, "SAT APR 4 — DINNER (hot, communal — Star's Rest)", fill_teal)
+    write_subheader(ws_mp, r, "SAT JUL 25 — DINNER (hot, communal — Star's Rest)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -529,7 +529,7 @@ def create_spring_hike_menu():
     
     # Saturday Dessert
     r += 1
-    write_subheader(ws_mp, r, "SAT APR 4 — DESSERT (Crème Brûlée)", fill_teal)
+    write_subheader(ws_mp, r, "SAT JUL 25 — DESSERT (Crème Brûlée)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -609,7 +609,7 @@ def create_spring_hike_menu():
     
     # SATURDAY DAILY TOTAL (PER PERSON CALORIES & TOTAL CAN VALUE)
     r += 1
-    ws_mp.cell(row=r, column=1, value="SAT APR 4 — DAILY TOTAL (Per Bear Can)")
+    ws_mp.cell(row=r, column=1, value="SAT JUL 25 — DAILY TOTAL (Per Bear Can)")
     ws_mp.cell(row=r, column=6, value=f"=F{sat_snacks_total_row}+F{sat_lunch_total_row}+F{sat_dinner_total_row}+F{sat_dessert_total_row}")
     ws_mp.cell(row=r, column=7, value=f"=G{sat_snacks_total_row}+G{sat_lunch_total_row}+G{sat_dinner_total_row}+G{sat_dessert_total_row}")
     ws_mp.cell(row=r, column=8, value=f"=H{sat_snacks_total_row}+H{sat_lunch_total_row}+H{sat_dinner_total_row}+H{sat_dessert_total_row}")
@@ -636,7 +636,7 @@ def create_spring_hike_menu():
     
     # SATURDAY PER PERSON
     r += 1
-    ws_mp.cell(row=r, column=1, value="SAT APR 4 — CALORIES DELIVERED PER PERSON")
+    ws_mp.cell(row=r, column=1, value="SAT JUL 25 — CALORIES DELIVERED PER PERSON")
     ws_mp.cell(row=r, column=6, value=f"=F{sat_daily_total_row}/3") # Scout 3
     ws_mp.cell(row=r, column=7, value=f"=G{sat_daily_total_row}/4") # Scout 4
     ws_mp.cell(row=r, column=8, value=f"=H{sat_daily_total_row}/3") # Adult 3
@@ -652,7 +652,7 @@ def create_spring_hike_menu():
     
     # --- SUNDAY ---
     r += 1
-    write_subheader(ws_mp, r, "SUN APR 5 — BREAKFAST (grab & go — MET-Rx Big100)", fill_teal)
+    write_subheader(ws_mp, r, "SUN JUL 26 — BREAKFAST (grab & go — MET-Rx Big100)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -733,7 +733,7 @@ def create_spring_hike_menu():
     
     # Sunday Snacks
     r += 1
-    write_subheader(ws_mp, r, "SUN APR 5 — SNACKS (individual — all cans)", fill_teal)
+    write_subheader(ws_mp, r, "SUN JUL 26 — SNACKS (individual — all cans)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -816,7 +816,7 @@ def create_spring_hike_menu():
     
     # Sunday Adult Supplement
     r += 1
-    write_subheader(ws_mp, r, "SUN APR 5 — ADULT SUPPLEMENT (Adult Cans Only)", fill_teal)
+    write_subheader(ws_mp, r, "SUN JUL 26 — ADULT SUPPLEMENT (Adult Cans Only)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -896,7 +896,7 @@ def create_spring_hike_menu():
     
     # Sunday Lunch
     r += 1
-    ws_mp.cell(row=r, column=1, value="SUN APR 5 — LUNCH (NO COOK — chicken wraps)")
+    ws_mp.cell(row=r, column=1, value="SUN JUL 26 — LUNCH (NO COOK — chicken wraps)")
     ws_mp.cell(row=r, column=1).font = font_subheader
     ws_mp.cell(row=r, column=1).fill = fill_teal
     ws_mp.merge_cells(start_row=r, start_column=1, end_row=r, end_column=17)
@@ -984,7 +984,7 @@ def create_spring_hike_menu():
     
     # Sunday Dinner
     r += 1
-    write_subheader(ws_mp, r, "SUN APR 5 — DINNER (hot, communal — Maggie's Half Acre)", fill_teal)
+    write_subheader(ws_mp, r, "SUN JUL 26 — DINNER (hot, communal — Maggie's Half Acre)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -1067,7 +1067,7 @@ def create_spring_hike_menu():
     
     # Sunday Dessert
     r += 1
-    write_subheader(ws_mp, r, "SUN APR 5 — DESSERT (Justin's Dark Choc PB Cups)", fill_teal)
+    write_subheader(ws_mp, r, "SUN JUL 26 — DESSERT (Justin's Dark Choc PB Cups)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -1147,7 +1147,7 @@ def create_spring_hike_menu():
     
     # SUNDAY DAILY TOTAL
     r += 1
-    ws_mp.cell(row=r, column=1, value="SUN APR 5 — DAILY TOTAL (Per Bear Can)")
+    ws_mp.cell(row=r, column=1, value="SUN JUL 26 — DAILY TOTAL (Per Bear Can)")
     ws_mp.cell(row=r, column=6, value=f"=F{sun_bkfst_total_row}+F{sun_snacks_total_row}+F{sun_supp_total_row}+F{sun_lunch_total_row}+F{sun_dinner_total_row}+F{sun_dessert_total_row}")
     ws_mp.cell(row=r, column=7, value=f"=G{sun_bkfst_total_row}+G{sun_snacks_total_row}+G{sun_supp_total_row}+G{sun_lunch_total_row}+G{sun_dinner_total_row}+G{sun_dessert_total_row}")
     ws_mp.cell(row=r, column=8, value=f"=H{sun_bkfst_total_row}+H{sun_snacks_total_row}+H{sun_supp_total_row}+H{sun_lunch_total_row}+H{sun_dinner_total_row}+H{sun_dessert_total_row}")
@@ -1174,7 +1174,7 @@ def create_spring_hike_menu():
     
     # SUNDAY PER PERSON
     r += 1
-    ws_mp.cell(row=r, column=1, value="SUN APR 5 — CALORIES DELIVERED PER PERSON")
+    ws_mp.cell(row=r, column=1, value="SUN JUL 26 — CALORIES DELIVERED PER PERSON")
     ws_mp.cell(row=r, column=6, value=f"=F{sun_daily_total_row}/3") # Scout 3
     ws_mp.cell(row=r, column=7, value=f"=G{sun_daily_total_row}/4") # Scout 4
     ws_mp.cell(row=r, column=8, value=f"=H{sun_daily_total_row}/3") # Adult 3
@@ -1190,7 +1190,7 @@ def create_spring_hike_menu():
     
     # --- MONDAY ---
     r += 1
-    write_subheader(ws_mp, r, "MON APR 6 — BREAKFAST (grab & go — ProBar Meal)", fill_teal)
+    write_subheader(ws_mp, r, "MON JUL 27 — BREAKFAST (grab & go — ProBar Meal)", fill_teal)
     r += 1
     write_table_headers(ws_mp, r)
     
@@ -1271,7 +1271,7 @@ def create_spring_hike_menu():
     
     # Monday Snacks
     r += 1
-    ws_mp.cell(row=r, column=1, value="MON APR 6 — SNACKS (hip-belt pocket)")
+    ws_mp.cell(row=r, column=1, value="MON JUL 27 — SNACKS (hip-belt pocket)")
     ws_mp.cell(row=r, column=1).font = font_subheader
     ws_mp.cell(row=r, column=1).fill = fill_teal
     ws_mp.merge_cells(start_row=r, start_column=1, end_row=r, end_column=17)
@@ -1359,7 +1359,7 @@ def create_spring_hike_menu():
     
     # Monday Lunch
     r += 1
-    ws_mp.cell(row=r, column=1, value="MON APR 6 — LUNCH (NO COOK — PB wraps)")
+    ws_mp.cell(row=r, column=1, value="MON JUL 27 — LUNCH (NO COOK — PB wraps)")
     ws_mp.cell(row=r, column=1).font = font_subheader
     ws_mp.cell(row=r, column=1).fill = fill_teal
     ws_mp.merge_cells(start_row=r, start_column=1, end_row=r, end_column=17)
@@ -1444,7 +1444,7 @@ def create_spring_hike_menu():
     
     # MONDAY DAILY TOTAL
     r += 1
-    ws_mp.cell(row=r, column=1, value="MON APR 6 — DAILY TOTAL (Per Bear Can)")
+    ws_mp.cell(row=r, column=1, value="MON JUL 27 — DAILY TOTAL (Per Bear Can)")
     ws_mp.cell(row=r, column=6, value=f"=F{mon_bkfst_total_row}+F{mon_snacks_total_row}+F{mon_lunch_total_row}")
     ws_mp.cell(row=r, column=7, value=f"=G{mon_bkfst_total_row}+G{mon_snacks_total_row}+G{mon_lunch_total_row}")
     ws_mp.cell(row=r, column=8, value=f"=H{mon_bkfst_total_row}+H{mon_snacks_total_row}+H{mon_lunch_total_row}")
@@ -1471,7 +1471,7 @@ def create_spring_hike_menu():
     
     # MONDAY PER PERSON
     r += 1
-    ws_mp.cell(row=r, column=1, value="MON APR 6 — CALORIES DELIVERED PER PERSON")
+    ws_mp.cell(row=r, column=1, value="MON JUL 27 — CALORIES DELIVERED PER PERSON")
     ws_mp.cell(row=r, column=6, value=f"=F{mon_daily_total_row}/3") # Scout 3
     ws_mp.cell(row=r, column=7, value=f"=G{mon_daily_total_row}/4") # Scout 4
     ws_mp.cell(row=r, column=8, value=f"=H{mon_daily_total_row}/3") # Adult 3
@@ -1534,7 +1534,7 @@ def create_spring_hike_menu():
     ws_pl = wb.create_sheet(title="Packing List")
     ws_pl.views.sheetView[0].showGridLines = True
     
-    ws_pl["A1"] = "OHLONE WILDERNESS TRAIL  ·  Bear Can Packing List  ·  April 4–6, 2026"
+    ws_pl["A1"] = "OHLONE WILDERNESS TRAIL  ·  Bear Can Packing List  ·  July 25–27, 2026"
     ws_pl["A1"].font = font_title
     ws_pl["A2"] = "Check off each item as you pack.   ★ = adult cans only.   Qty = items per bear can type."
     ws_pl["A2"].font = font_subtitle
@@ -1555,7 +1555,7 @@ def create_spring_hike_menu():
     # We will build packing list by parsing our meal plan data
     # Saturday
     pl_rows = [
-        ("SATURDAY  APR 4", "", "", "", "", "", "", True),
+        ("SATURDAY  JUL 25", "", "", "", "", "", "", True),
         ("", "SNACKS", "Kind PB Dark Choc Bar", 3, 4, 3, "hip-belt pocket; ⚠ NUT", False),
         ("", "SNACKS", "Kind – Caramel Almond & Peanut Bar", 3, 4, 3, "hip-belt pocket; ⚠ NUT", False),
         ("", "SNACKS", "Krave Sea Salt Beef Jerky", 3, 4, 3, "hip-belt pocket; nut-free", False),
@@ -1570,7 +1570,7 @@ def create_spring_hike_menu():
         ("", "DINNER", "Swiss Miss Hot Chocolate", 6, 8, 0, "scouts only", False),
         ("", "DESSERT", "Backpacker's Pantry Crème Brûlée", 2, 2, 2, "hot · buddy-pair shares 1", False),
         
-        ("SUNDAY  APR 5", "", "", "", "", "", "", True),
+        ("SUNDAY  JUL 26", "", "", "", "", "", "", True),
         ("", "BREAKFAST", "MET-Rx Big100 – Super Cookie Crunch", 3, 4, 3, "grab & go; ⚠ NUT", False),
         ("", "BREAKFAST", "Swiss Miss Hot Chocolate", 6, 8, 0, "scouts only", False),
         ("", "BREAKFAST", "Adults: own coffee / tea", 0, 0, 3, "adults only ★", False),
@@ -1591,7 +1591,7 @@ def create_spring_hike_menu():
         ("", "DINNER", "Swiss Miss Hot Chocolate", 6, 8, 0, "scouts only", False),
         ("", "DESSERT", "Justin's Dark Choc PB Cups", 3, 4, 3, "1 packet/person; ⚠ NUT", False),
         
-        ("MONDAY  APR 6", "", "", "", "", "", "", True),
+        ("MONDAY  JUL 27", "", "", "", "", "", "", True),
         ("", "BREAKFAST", "ProBar Meal – Oatmeal Chocolate Chip", 3, 4, 3, "grab & go; ⚠ NUT (cashews)", False),
         ("", "BREAKFAST", "Swiss Miss Hot Chocolate", 6, 8, 0, "scouts only", False),
         ("", "SNACKS", "Clif Bar – Crunchy PB", 3, 4, 3, "hip-belt pocket; ⚠ NUT", False),
@@ -1645,7 +1645,7 @@ def create_spring_hike_menu():
     ws_sl = wb.create_sheet(title="Shopping List")
     ws_sl.views.sheetView[0].showGridLines = True
     
-    ws_sl["A1"] = "Master Shopping List — 19 People · 6 Bear Cans  |  April 4–6, 2026"
+    ws_sl["A1"] = "Master Shopping List — 19 People · 6 Bear Cans  |  July 25–27, 2026"
     ws_sl["A1"].font = font_title
     ws_sl["A2"] = "🟡 Yellow = bulk buy (Costco/Amazon)  |  🟠 Orange = adult supplement  |  Group Total = 3*(Scout 3) + 1*(Scout 4) + 2*(Adult 3)"
     ws_sl["A2"].font = font_subtitle
@@ -1829,17 +1829,17 @@ def create_spring_hike_menu():
     ws_na.row_dimensions[4].height = 24
     
     na_data = [
-        ["Sat Apr 4", "Snacks", "Kind PB Dark Choc Bar", "Peanuts, almonds", "88 Acres Dark Choc Sea Salt Seed + Oat Bar", "Dedicated nut-free bakery. Free from top 9.", 150, "Amazon / 88acres.com"],
-        ["Sat Apr 4", "Snacks", "Kind – Caramel Almond & Peanut Bar", "Almonds, peanuts", "88 Acres Cinnamon Maple Seed + Oat Bar", "Same nut-free facility.", 150, "Amazon / 88acres.com"],
-        ["Sat Apr 4", "Dessert", "BP Crème Brûlée", "Check label - may contain cashews", "Honey Stinger Gold Waffle (contingency)", "Honey Stinger: simple ingredients, no nuts.", 160, "REI / Amazon"],
-        ["Sun Apr 5", "Breakfast", "MET-Rx Big100 Super Cookie Crunch", "Peanuts, almonds, tree nuts", "No Nuts! Chocolate Chip Protein Bar", "Certified 100% nut-free facility. 12g protein.", 185, "Amazon / gononuts.com"],
-        ["Sun Apr 5", "Snacks", "Kind – Dark Choc Nuts & Sea Salt Bar", "Almonds, peanuts, cashews", "88 Acres bar (any flavor)", "Same nut-free facility.", 150, "Amazon / 88acres.com"],
-        ["Sun Apr 5", "Lunch", "Clif Bar – Crunchy PB", "Peanuts", "Clif Bar – Chocolate Chip", "Clif Chocolate Chip: no nuts in ingredients.", 250, "Add to main Costco order"],
-        ["Sun Apr 5", "Lunch", "Justin's Classic PB Squeeze Pack", "Peanuts", "Once Again Sunflower Butter Squeeze Pack", "Peanut-free facility. Free from top 9.", 200, "Amazon"],
-        ["Sun Apr 5", "Dessert", "Justin's Dark Choc PB Cups", "Peanuts, almonds", "Honey Stinger Gold Waffle or Enjoy Life Choc", "No nuts. Enjoy Life: top-14 free.", 160, "REI / Amazon"],
-        ["Mon Apr 6", "Breakfast", "ProBar Meal – Oatmeal Chocolate Chip", "Cashews", "No Nuts! Cinnamon Roll or Caramel Mocha", "Same certified nut-free facility.", 185, "Amazon / gononuts.com"],
-        ["Mon Apr 6", "Snacks", "Clif Bar – Crunchy PB", "Peanuts", "Clif Bar – Chocolate Chip", "Clif Chocolate Chip: no nuts in ingredients.", 250, "Add to main Costco order"],
-        ["Mon Apr 6", "Lunch", "Justin's Classic PB Squeeze Pack", "Peanuts", "Once Again Sunflower Butter Squeeze Pack", "Peanut-free facility. Free from top 9.", 200, "Amazon"]
+        ["Sat Jul 25", "Snacks", "Kind PB Dark Choc Bar", "Peanuts, almonds", "88 Acres Dark Choc Sea Salt Seed + Oat Bar", "Dedicated nut-free bakery. Free from top 9.", 150, "Amazon / 88acres.com"],
+        ["Sat Jul 25", "Snacks", "Kind – Caramel Almond & Peanut Bar", "Almonds, peanuts", "88 Acres Cinnamon Maple Seed + Oat Bar", "Same nut-free facility.", 150, "Amazon / 88acres.com"],
+        ["Sat Jul 25", "Dessert", "BP Crème Brûlée", "Check label - may contain cashews", "Honey Stinger Gold Waffle (contingency)", "Honey Stinger: simple ingredients, no nuts.", 160, "REI / Amazon"],
+        ["Sun Jul 26", "Breakfast", "MET-Rx Big100 Super Cookie Crunch", "Peanuts, almonds, tree nuts", "No Nuts! Chocolate Chip Protein Bar", "Certified 100% nut-free facility. 12g protein.", 185, "Amazon / gononuts.com"],
+        ["Sun Jul 26", "Snacks", "Kind – Dark Choc Nuts & Sea Salt Bar", "Almonds, peanuts, cashews", "88 Acres bar (any flavor)", "Same nut-free facility.", 150, "Amazon / 88acres.com"],
+        ["Sun Jul 26", "Lunch", "Clif Bar – Crunchy PB", "Peanuts", "Clif Bar – Chocolate Chip", "Clif Chocolate Chip: no nuts in ingredients.", 250, "Add to main Costco order"],
+        ["Sun Jul 26", "Lunch", "Justin's Classic PB Squeeze Pack", "Peanuts", "Once Again Sunflower Butter Squeeze Pack", "Peanut-free facility. Free from top 9.", 200, "Amazon"],
+        ["Sun Jul 26", "Dessert", "Justin's Dark Choc PB Cups", "Peanuts, almonds", "Honey Stinger Gold Waffle or Enjoy Life Choc", "No nuts. Enjoy Life: top-14 free.", 160, "REI / Amazon"],
+        ["Mon Jul 27", "Breakfast", "ProBar Meal – Oatmeal Chocolate Chip", "Cashews", "No Nuts! Cinnamon Roll or Caramel Mocha", "Same certified nut-free facility.", 185, "Amazon / gononuts.com"],
+        ["Mon Jul 27", "Snacks", "Clif Bar – Crunchy PB", "Peanuts", "Clif Bar – Chocolate Chip", "Clif Chocolate Chip: no nuts in ingredients.", 250, "Add to main Costco order"],
+        ["Mon Jul 27", "Lunch", "Justin's Classic PB Squeeze Pack", "Peanuts", "Once Again Sunflower Butter Squeeze Pack", "Peanut-free facility. Free from top 9.", 200, "Amazon"]
     ]
     
     for idx, item in enumerate(na_data):

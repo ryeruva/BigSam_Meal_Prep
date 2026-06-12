@@ -24,34 +24,38 @@ def run_verification():
     ws_sl = wb["Shopping List"]
     errors = 0
     
-    # Check rows 4 to 28
-    for r in range(4, 29):
+    # Check rows 4 to 31
+    for r in range(4, 32):
         item_name = ws_sl.cell(row=r, column=2).value
-        qty_sc3 = ws_sl.cell(row=r, column=3).value
-        qty_sc4 = ws_sl.cell(row=r, column=4).value
-        qty_ad3 = ws_sl.cell(row=r, column=5).value
-        group_total = ws_sl.cell(row=r, column=6).value
-        price = ws_sl.cell(row=r, column=7).value
-        cost_sc3 = ws_sl.cell(row=r, column=8).value
-        cost_sc4 = ws_sl.cell(row=r, column=9).value
-        cost_ad3 = ws_sl.cell(row=r, column=10).value
-        cost_group = ws_sl.cell(row=r, column=11).value
-        weight_oz = ws_sl.cell(row=r, column=12).value
-        weight_group = ws_sl.cell(row=r, column=13).value
+        qty_p1_sc3 = ws_sl.cell(row=r, column=3).value
+        qty_p1_sc4 = ws_sl.cell(row=r, column=4).value
+        qty_p1_ad3 = ws_sl.cell(row=r, column=5).value
+        qty_p2_sc3 = ws_sl.cell(row=r, column=6).value
+        qty_p2_sc4 = ws_sl.cell(row=r, column=7).value
+        qty_p2_ad3 = ws_sl.cell(row=r, column=8).value
+        group_total = ws_sl.cell(row=r, column=9).value
+        price = ws_sl.cell(row=r, column=10).value
+        cost_sc3 = ws_sl.cell(row=r, column=11).value
+        cost_sc4 = ws_sl.cell(row=r, column=12).value
+        cost_ad3 = ws_sl.cell(row=r, column=13).value
+        cost_group = ws_sl.cell(row=r, column=14).value
+        weight_oz = ws_sl.cell(row=r, column=15).value
+        weight_group = ws_sl.cell(row=r, column=16).value
+        notes = ws_sl.cell(row=r, column=17).value
         
         # Verify Group Total formula
-        is_allergy_item = "allergy scout" in ws_sl.cell(row=r, column=14).value.lower() or "88 acres" in item_name.lower() or "once again" in item_name.lower() or "honey stinger" in item_name.lower()
+        is_allergy_item = "allergy scout" in notes.lower() or "88 acres" in item_name.lower() or "once again" in item_name.lower() or "honey stinger" in item_name.lower()
         if not is_allergy_item:
-            expected_group_total_formula = f"=3*C{r}+1*D{r}+2*E{r}"
+            expected_group_total_formula = f"=3*(C{r}+F{r})+1*(D{r}+G{r})+2*(E{r}+H{r})"
             if group_total != expected_group_total_formula:
                 print(f"Row {r} Error: Group total formula is {group_total}, expected {expected_group_total_formula}")
                 errors += 1
                 
         # Verify Cost Formulas row alignment
-        expected_cost_sc3 = f"=C{r}*G{r}"
-        expected_cost_sc4 = f"=D{r}*G{r}"
-        expected_cost_ad3 = f"=E{r}*G{r}"
-        expected_cost_group = f"=F{r}*G{r}"
+        expected_cost_sc3 = f"=(C{r}+F{r})*J{r}"
+        expected_cost_sc4 = f"=(D{r}+G{r})*J{r}"
+        expected_cost_ad3 = f"=(E{r}+H{r})*J{r}"
+        expected_cost_group = f"=I{r}*J{r}"
         
         if cost_sc3 != expected_cost_sc3:
             print(f"Row {r} Error: Scout 3 Cost formula is {cost_sc3}, expected {expected_cost_sc3}")
@@ -67,36 +71,109 @@ def run_verification():
             errors += 1
             
         # Verify Weight Formula row alignment
-        expected_weight_group = f"=F{r}*L{r}"
+        expected_weight_group = f"=I{r}*O{r}"
         if weight_group != expected_weight_group:
             print(f"Row {r} Error: Group Weight formula is {weight_group}, expected {expected_weight_group}")
             errors += 1
 
     # Check Budget Overview cells in Overview
-    cost_adult_formula = ws_ov["B28"].value
-    cost_sc3_formula = ws_ov["C28"].value
-    cost_sc4_formula = ws_ov["D28"].value
-    cost_total_formula = ws_ov["E28"].value
+    cost_adult_formula = ws_ov["B35"].value
+    cost_sc3_formula = ws_ov["C35"].value
+    cost_sc4_formula = ws_ov["D35"].value
+    cost_total_formula = ws_ov["E35"].value
     
     print("\nOverview Budget Formulas:")
-    print(f"Adult Can Cost Cell B28: {cost_adult_formula}")
-    print(f"Scout 3-ppl Cost Cell C28: {cost_sc3_formula}")
-    print(f"Scout 4-ppl Cost Cell D28: {cost_sc4_formula}")
-    print(f"Group Total Cost Cell E28: {cost_total_formula}")
+    print(f"Adult Can Cost Cell B35: {cost_adult_formula}")
+    print(f"Scout 3-ppl Cost Cell C35: {cost_sc3_formula}")
+    print(f"Scout 4-ppl Cost Cell D35: {cost_sc4_formula}")
+    print(f"Group Total Cost Cell E35: {cost_total_formula}")
     
+    expected_cost_adult = "=SUM('Shopping List'!M$4:M$31)"
+    expected_cost_sc3 = "=SUM('Shopping List'!K$4:K$31)"
+    expected_cost_sc4 = "=SUM('Shopping List'!L$4:L$31)"
+    expected_cost_total = "=SUM('Shopping List'!N$4:N$31)"
+    
+    if cost_adult_formula != expected_cost_adult:
+        print(f"Overview Error: B35 is {cost_adult_formula}, expected {expected_cost_adult}")
+        errors += 1
+    if cost_sc3_formula != expected_cost_sc3:
+        print(f"Overview Error: C35 is {cost_sc3_formula}, expected {expected_cost_sc3}")
+        errors += 1
+    if cost_sc4_formula != expected_cost_sc4:
+        print(f"Overview Error: D35 is {cost_sc4_formula}, expected {expected_cost_sc4}")
+        errors += 1
+    if cost_total_formula != expected_cost_total:
+        print(f"Overview Error: E35 is {cost_total_formula}, expected {expected_cost_total}")
+        errors += 1
+        
+    # Check Overview Max Carry weight formulas
+    weight_adult_formula = ws_ov["B37"].value
+    weight_sc3_formula = ws_ov["C37"].value
+    weight_sc4_formula = ws_ov["D37"].value
+    weight_total_formula = ws_ov["E37"].value
+    
+    print("\nOverview Max Carry Weight Formulas:")
+    print(f"Adult Max Carry Weight Cell B37: {weight_adult_formula}")
+    print(f"Scout 3-ppl Max Carry Weight Cell C37: {weight_sc3_formula}")
+    print(f"Scout 4-ppl Max Carry Weight Cell D37: {weight_sc4_formula}")
+    print(f"Group Max Carry Weight Cell E37: {weight_total_formula}")
+    
+    expected_weight_adult = "=SUMPRODUCT('Shopping List'!E$4:E$31,'Shopping List'!O$4:O$31)/16"
+    expected_weight_sc3 = "=SUMPRODUCT('Shopping List'!C$4:C$31,'Shopping List'!O$4:O$31)/16"
+    expected_weight_sc4 = "=SUMPRODUCT('Shopping List'!D$4:D$31,'Shopping List'!O$4:O$31)/16"
+    expected_weight_total = "=SUMPRODUCT(3*'Shopping List'!C$4:C$31+1*'Shopping List'!D$4:D$31+2*'Shopping List'!E$4:E$31,'Shopping List'!O$4:O$31)/16"
+    
+    if weight_adult_formula != expected_weight_adult:
+        print(f"Overview Error: B37 is {weight_adult_formula}, expected {expected_weight_adult}")
+        errors += 1
+    if weight_sc3_formula != expected_weight_sc3:
+        print(f"Overview Error: C37 is {weight_sc3_formula}, expected {expected_weight_sc3}")
+        errors += 1
+    if weight_sc4_formula != expected_weight_sc4:
+        print(f"Overview Error: D37 is {weight_sc4_formula}, expected {expected_weight_sc4}")
+        errors += 1
+    if weight_total_formula != expected_weight_total:
+        print(f"Overview Error: E37 is {weight_total_formula}, expected {expected_weight_total}")
+        errors += 1
+
     # 3. Check Meal Plan Formulas in Meal Plan (Per Bear Can) sheet
     ws_mp = wb["Meal Plan (Per Bear Can)"]
-    # Check a few rows to verify kcal and cost formula structure
     print("\nMeal Plan Formula Previews:")
-    for check_row in [10, 28, 61, 78]:
+    
+    item_count = 0
+    # Let's dynamically find rows representing items
+    for check_row in range(4, ws_mp.max_row + 1):
         item_name = ws_mp.cell(row=check_row, column=1).value
+        # If item_name is empty or not a string, skip
+        if not item_name or not isinstance(item_name, str):
+            continue
+        # If it is a header or subtotal or section description, skip
+        if (item_name.startswith("  ") or 
+            "TOTAL" in item_name or 
+            "PHASE" in item_name or 
+            "DAY" in item_name or 
+            "BREAKFAST" in item_name or 
+            "LUNCH" in item_name or 
+            "DINNER" in item_name or 
+            "SNACKS" in item_name or 
+            "SUPPLEMENT" in item_name or 
+            "DESSERT" in item_name or 
+            "Food Item" in item_name or
+            "Eaten at home" in item_name):
+            continue
+            
         sq3_qty = ws_mp.cell(row=check_row, column=2).value
         sq4_qty = ws_mp.cell(row=check_row, column=3).value
         ad3_qty = ws_mp.cell(row=check_row, column=4).value
         sq3_kcal = ws_mp.cell(row=check_row, column=6).value
         sq4_kcal = ws_mp.cell(row=check_row, column=7).value
         ad3_kcal = ws_mp.cell(row=check_row, column=8).value
-        print(f"Row {check_row} [{item_name}]: Qty({sq3_qty}, {sq4_qty}, {ad3_qty}) | kcal formulas({sq3_kcal}, {sq4_kcal}, {ad3_kcal})")
+        
+        # We only print the first 5 previews
+        if item_count < 5:
+            print(f"Row {check_row} [{item_name}]: Qty({sq3_qty}, {sq4_qty}, {ad3_qty}) | kcal formulas({sq3_kcal}, {sq4_kcal}, {ad3_kcal})")
+            
+        item_count += 1
         
         # Check kcal calculations
         if sq3_kcal != f"=B{check_row}*E{check_row}":

@@ -57,8 +57,6 @@ def create_big_sam_menu():
     align_wrap_center = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
     # 1. MEAL PLAN DATA DEFINITION
-    # Phase 1: Days 1-3 (Initial Carry)
-    # Phase 2: Days 4-6 (Mule Drop)
     menu_data = [
         # --- PHASE 1 ---
         {
@@ -264,6 +262,60 @@ def create_big_sam_menu():
         }
     ]
 
+    # Dynamic Shopping List Accumulator
+    # key: item_name -> {info + p1/p2 qtys}
+    sl_totals = {}
+    
+    # Initialize accumulator with items info
+    # We will populate it from menu_data items dynamically!
+    def register_item(name, price, oz, notes, is_nut, is_supp):
+        if name not in sl_totals:
+            # Determine is_bulk
+            is_bulk = name in [
+                "MET-Rx Big100 – Super Cookie Crunch",
+                "ProBar Meal – Oatmeal Chocolate Chip",
+                "Columbus Hard Salami (sliced packet)",
+                "Chicken of the Sea Shredded Chicken Pouch",
+                "Mission Street Taco Flour Tortillas",
+                "Tillamook Cheddar Cheese Packets",
+                "Kind – Peanut Butter Dark Chocolate Bar",
+                "Kind – Dark Choc Nuts & Sea Salt Bar",
+                "Krave Sea Salt Original Beef Jerky",
+                "Gatorade Powder Pack",
+                "Clif Bar – Crunchy PB",
+                "Clif Builder's Bar (adult supplement)",
+                "Swiss Miss Hot Chocolate",
+                "Banana Chips (1 oz)"
+            ]
+            sl_totals[name] = {
+                "price": price, "oz": oz, "notes": notes, "is_nut": is_nut, "is_supp": is_supp, "is_bulk": is_bulk,
+                "p1_sc3": 0, "p1_sc4": 0, "p1_ad3": 0,
+                "p2_sc3": 0, "p2_sc4": 0, "p2_ad3": 0
+            }
+
+    # Populate items dynamically during registration
+    for day_entry in menu_data:
+        phase = day_entry["phase"]
+        for meal, items in day_entry["meals"].items():
+            for item in items:
+                # name, sc3, sc4, ad3, kcal, price, oz, notes, is_nut, is_supp
+                register_item(item[0], item[5], item[6], item[7], item[8], item[9])
+                
+                # accumulate quantities
+                if phase == 1:
+                    sl_totals[item[0]]["p1_sc3"] += item[1]
+                    sl_totals[item[0]]["p1_sc4"] += item[2]
+                    sl_totals[item[0]]["p1_ad3"] += item[3]
+                else:
+                    sl_totals[item[0]]["p2_sc3"] += item[1]
+                    sl_totals[item[0]]["p2_sc4"] += item[2]
+                    sl_totals[item[0]]["p2_ad3"] += item[3]
+
+    # Add allergy items manually
+    register_item("88 Acres Seed + Oat Bars (allergy scout)", 2.40, 1.40, "Allergy scout snacks swap", True, False)
+    register_item("Once Again Organic Sunflower Butter Squeeze", 1.50, 1.15, "Allergy scout PB swap", True, False)
+    register_item("Honey Stinger Gold Waffle (allergy scout)", 1.09, 1.00, "Allergy scout dessert swap", True, False)
+
     # Initialize Sheet Row Pointers & Excel references
     day_total_rows = {}
     phase_total_rows = {}
@@ -333,9 +385,6 @@ def create_big_sam_menu():
                         ws_mp.cell(row=r, column=1).font = font_italic
                         ws_mp.cell(row=r, column=1).alignment = align_center
                         r += 1
-                    elif meal_name in ["DINNER", "DESSERT"] and day_num == 6:
-                        # Exit day no dinner
-                        pass
                     continue
                 
                 # Write meal subheader
@@ -525,7 +574,7 @@ def create_big_sam_menu():
             
     grand_total_row = r
 
-    # --- 4. SHOPPING LIST SHEET (Generate before Overview to resolve row references) ---
+    # --- 4. SHOPPING LIST SHEET (Generate dynamically from sl_totals accumulator) ---
     ws_sl = wb.create_sheet(title="Shopping List")
     ws_sl.views.sheetView[0].showGridLines = True
     
@@ -549,78 +598,36 @@ def create_big_sam_menu():
         cell.border = border_all
     ws_sl.row_dimensions[3].height = 30
     
-    # Item definitions: name, phase1_sc3, phase1_sc4, phase1_ad3, phase2_sc3, phase2_sc4, phase2_ad3, price, oz, notes, is_nut, is_supp, is_bulk
-    sl_data = [
-        ["MET-Rx Big100 – Super Cookie Crunch", 6, 8, 6, 9, 12, 9, 2.19, 3.53, "Bkfst; ⚠ NUT", True, False, True],
-        ["ProBar Meal – Oatmeal Chocolate Chip", 6, 8, 6, 9, 12, 9, 2.99, 3.00, "Bkfst & Lunch; ⚠ NUT (cashews)", True, False, True],
-        ["Peak Refuel – Beef Pasta Marinara", 4, 6, 6, 2, 3, 3, 7.49, 3.20, "Dinner (1.5 svgs/pouch)", False, False, False],
-        ["Peak Refuel – Beef Stroganoff", 2, 3, 3, 2, 3, 3, 7.49, 3.50, "Dinner (1.5 svgs/pouch)", False, False, False],
-        ["Backpacker's Pantry – Crème Brûlée", 4, 4, 4, 2, 2, 2, 8.99, 2.26, "Dessert (shares pouch)", False, False, False],
-        ["Justin's Dark Chocolate Peanut Butter Cups", 3, 4, 3, 3, 4, 3, 1.49, 1.41, "Dessert; ⚠ NUT", True, False, False],
-        ["Columbus Hard Salami (sliced packet)", 3, 4, 3, 3, 4, 3, 2.99, 2.00, "Lunch; 1/person", False, False, True],
-        ["Wasa Crisp'n Light Crackerbread", 3, 4, 3, 3, 4, 3, 0.50, 1.00, "Lunch side", False, False, False],
-        ["Chicken of the Sea Shredded Chicken Pouch", 3, 4, 3, 3, 4, 3, 2.29, 2.50, "Lunch; 1/person", False, False, True],
-        ["Mission Street Taco Flour Tortillas", 18, 24, 18, 18, 24, 18, 0.25, 0.50, "lunch + dinner wraps", False, False, True],
-        ["Tillamook Cheddar Cheese Packets", 12, 16, 12, 12, 16, 12, 0.75, 0.70, "lunch + dinner side", False, False, True],
-        ["Justin's Classic PB Squeeze Pack", 6, 8, 6, 6, 8, 6, 1.49, 1.15, "Lunch side; ⚠ NUT", True, False, False],
-        ["Idahoan Mashed Potatoes – Butter & Herb", 3, 4, 3, 3, 4, 3, 0.98, 1.00, "Dinner side", False, False, False],
-        ["Kind – Peanut Butter Dark Chocolate Bar", 9, 12, 9, 9, 12, 9, 1.04, 1.40, "Snacks; ⚠ NUT", True, False, True],
-        ["Kind – Caramel Almond & Peanut Bar", 9, 12, 9, 9, 12, 9, 1.59, 1.40, "Snacks; ⚠ NUT", True, False, False],
-        ["Kind – Dark Choc Nuts & Sea Salt Bar", 9, 12, 9, 9, 12, 9, 1.04, 1.40, "Snacks; ⚠ NUT", True, False, True],
-        ["Krave Sea Salt Original Beef Jerky", 9, 12, 9, 9, 12, 9, 2.19, 1.48, "Snacks", False, False, True],
-        ["Gatorade Powder Pack", 12, 16, 12, 12, 16, 12, 0.38, 1.23, "Snacks", False, False, True],
-        ["Clif Bar – Crunchy PB", 6, 8, 6, 6, 8, 6, 1.29, 2.40, "Lunch snack; ⚠ NUT", True, False, True],
-        ["Clif Builder's Bar (adult supplement)", 0, 0, 9, 0, 0, 9, 2.17, 2.40, "Adults ★; ⚠ NUT", True, True, True],
-        ["Justin's PB Squeeze (adult supplement)", 0, 0, 9, 0, 0, 9, 1.49, 1.15, "Adults ★; ⚠ NUT", True, True, False],
-        ["Swiss Miss Hot Chocolate", 30, 40, 0, 30, 40, 0, 0.38, 0.73, "Scouts only", False, False, True],
-        ["Peak Refuel – Fudge Brownie Bites", 2, 2, 2, 2, 2, 2, 4.99, 1.50, "Snacks", False, False, False],
-        ["Trader Joe's Dried Mango Slices (1 oz)", 3, 4, 3, 3, 4, 3, 0.55, 1.00, "Snacks", False, False, False],
-        ["Banana Chips (1 oz)", 3, 4, 3, 3, 4, 3, 0.45, 1.00, "Snacks", False, False, True],
-        
-        # Nut allergy swaps
-        ["88 Acres Seed + Oat Bars (allergy scout)", 0, 0, 0, 0, 0, 0, 2.40, 1.40, "Allergy scout snacks swap", True, False, False],
-        ["Once Again Organic Sunflower Butter Squeeze", 0, 0, 0, 0, 0, 0, 1.50, 1.15, "Allergy scout PB swap", True, False, False],
-        ["Honey Stinger Gold Waffle (allergy scout)", 0, 0, 0, 0, 0, 0, 1.09, 1.00, "Allergy scout dessert swap", True, False, False]
-    ]
+    # Sort items so they look organized (e.g. bulk and supplements grouped logically)
+    sorted_items = sorted(list(sl_totals.keys()))
     
     sl_start_row = 4
-    for idx, item in enumerate(sl_data):
+    for idx, item_name in enumerate(sorted_items):
         r = sl_start_row + idx
-        shopping_list_items_rows[item[0]] = r
+        shopping_list_items_rows[item_name] = r
+        item = sl_totals[item_name]
         
         ws_sl.cell(row=r, column=1, value="☐").alignment = align_center
-        ws_sl.cell(row=r, column=2, value=item[0]).alignment = align_left
+        ws_sl.cell(row=r, column=2, value=item_name).alignment = align_left
         
         # Phase 1
-        ws_sl.cell(row=r, column=3, value=item[1]).alignment = align_center
-        ws_sl.cell(row=r, column=4, value=item[2]).alignment = align_center
-        ws_sl.cell(row=r, column=5, value=item[3]).alignment = align_center
+        ws_sl.cell(row=r, column=3, value=item["p1_sc3"]).alignment = align_center
+        ws_sl.cell(row=r, column=4, value=item["p1_sc4"]).alignment = align_center
+        ws_sl.cell(row=r, column=5, value=item["p1_ad3"]).alignment = align_center
         
         # Phase 2
-        ws_sl.cell(row=r, column=6, value=item[4]).alignment = align_center
-        ws_sl.cell(row=r, column=7, value=item[5]).alignment = align_center
-        ws_sl.cell(row=r, column=8, value=item[6]).alignment = align_center
+        ws_sl.cell(row=r, column=6, value=item["p2_sc3"]).alignment = align_center
+        ws_sl.cell(row=r, column=7, value=item["p2_sc4"]).alignment = align_center
+        ws_sl.cell(row=r, column=8, value=item["p2_ad3"]).alignment = align_center
         
-        # Group Total formula (6 Days): 3*(Phase 1 + Phase 2 Scout 3) + 1*(Phase 1 + Phase 2 Scout 4) + 2*(Phase 1 + Phase 2 Adult 3)
-        # Except for allergy swap items where we set group totals manually!
-        is_allergy_item = "allergy scout" in item[9].lower() or "88 acres" in item[0].lower() or "once again" in item[0].lower() or "honey stinger" in item[0].lower()
+        # Group Total formula (6 Days)
+        is_allergy_item = "allergy scout" in item["notes"].lower() or "88 acres" in item_name.lower() or "once again" in item_name.lower() or "honey stinger" in item_name.lower()
         if is_allergy_item:
-            if "88 acres" in item[0].lower():
-                # Swap 2 Kind bars per day on Sat, Sun, Mon, Tue, Wed, Thu = 12 swaps!
-                # Wait, Day 3 & Day 6 monday snack has Clif PB -> swapped to Clif Choc Chip (not 88 Acres).
-                # Day 1 snacks: PB (1) & Caramel (1) -> 2 swaps.
-                # Day 2 snacks: Dark Choc Nuts (1) -> 1 swap.
-                # Day 3 snacks: none (uses Jerky + Gatorade + Brownies + Clif PB (swapped to Clif Choc Chip)).
-                # Day 4 snacks: Dark Choc Nuts (1) -> 1 swap.
-                # Day 5 snacks: PB (1) & Caramel (1) -> 2 swaps.
-                # Day 6 snacks: none.
-                # Total 88 Acres needed = 2 + 1 + 0 + 1 + 2 + 0 = 6 swaps!
+            if "88 acres" in item_name.lower():
                 ws_sl.cell(row=r, column=9, value=6)
-            elif "once again" in item[0].lower():
-                # Swaps PB squeeze on Sun lunch, Mon lunch, Wed lunch, Thu lunch = 4 swaps!
+            elif "once again" in item_name.lower():
                 ws_sl.cell(row=r, column=9, value=4)
             else: # Honey stinger
-                # Swaps Sat dessert (Crème Brûlée, 1), Sun dessert (PB Cups, 1), Mon dessert (Crème Brûlée, 1), Tue dessert (PB Cups, 1), Wed dessert (Crème Brûlée, 1) = 5 swaps!
                 ws_sl.cell(row=r, column=9, value=5)
         else:
             ws_sl.cell(row=r, column=9, value=f"=3*(C{r}+F{r})+1*(D{r}+G{r})+2*(E{r}+H{r})")
@@ -628,7 +635,7 @@ def create_big_sam_menu():
         ws_sl.cell(row=r, column=9).alignment = align_center
         
         # $/Unit
-        ws_sl.cell(row=r, column=10, value=item[7]).alignment = align_right
+        ws_sl.cell(row=r, column=10, value=item["price"]).alignment = align_right
         ws_sl.cell(row=r, column=10).number_format = '"$"#,##0.00'
         
         # Cost columns (K, L, M, N)
@@ -642,20 +649,16 @@ def create_big_sam_menu():
         ws_sl.cell(row=r, column=14).number_format = '"$"#,##0.00'
         
         # Weight columns (O, P)
-        ws_sl.cell(row=r, column=15, value=item[8]).alignment = align_center
+        ws_sl.cell(row=r, column=15, value=item["oz"]).alignment = align_center
         ws_sl.cell(row=r, column=16, value=f"=I{r}*O{r}").alignment = align_right
         ws_sl.cell(row=r, column=16).number_format = '0.0" oz"'
         
         # Notes
-        ws_sl.cell(row=r, column=17, value=item[9]).alignment = align_left
+        ws_sl.cell(row=r, column=17, value=item["notes"]).alignment = align_left
         
         # Styles
-        is_nut = item[10]
-        is_supp = item[11]
-        is_bulk = item[12]
-        
-        fill = fill_allergy if is_nut else (fill_adult if is_supp else (fill_alt_row if r % 2 == 1 else PatternFill(fill_type=None)))
-        font = font_allergy if is_nut else (font_adult if is_supp else font_regular)
+        fill = fill_allergy if item["is_nut"] else (fill_adult if item["is_supp"] else (fill_alt_row if r % 2 == 1 else PatternFill(fill_type=None)))
+        font = font_allergy if item["is_nut"] else (font_adult if item["is_supp"] else font_regular)
         
         for col_c in range(1, 18):
             cell = ws_sl.cell(row=r, column=col_c)
@@ -664,8 +667,7 @@ def create_big_sam_menu():
             if fill.fill_type:
                 cell.fill = fill
                 
-        # Highlight bulk items with a light gray fill on the Item name or notes if desired
-        if is_bulk and not is_nut and not is_supp:
+        if item["is_bulk"] and not item["is_nut"] and not item["is_supp"]:
             ws_sl.cell(row=r, column=2).fill = fill_light_gray
             
     sl_end_row = r
@@ -690,8 +692,6 @@ def create_big_sam_menu():
         elif col_c == 16:
             cell.number_format = '0.0" oz"'
             cell.alignment = align_right
-            
-    shopping_list_totals_row = r
 
     # --- 1. OVERVIEW SHEET (Generate now since we have the row references) ---
     ws_ov = wb.create_sheet(title="Overview", index=0)
@@ -743,9 +743,9 @@ def create_big_sam_menu():
         cell.border = border_all
         
     schedule_data = [
-        ["Day 1", "Sat Jul 25", "Kennedy Meadows → Lower Relief Valley", "6.88 mi", "+2,262 ft", "−579 ft", "Lower Relief Valley", "Snacks · Lunch · Dinner · Dessert", "Reservoir/Creek (filter)", "morales swimming hole side-trip"],
+        ["Day 1", "Sat Jul 25", "Kennedy Meadows → Lower Relief Valley", "6.88 mi", "+2,262 ft", "−579 ft", "Lower Relief Valley", "Snacks · Lunch · Dinner · Dessert", "Reservoir/Creek (filter)", "morale swimming hole side-trip"],
         ["Day 2", "Sun Jul 26", "Lower Relief Valley → Spring Meadow", "5.97 mi", "+1,129 ft", "−509 ft", "Spring Meadow", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Spring/Creek (filter)", "Wire Lake side-trip"],
-        ["Day 3", "Mon Jul 27", "Spring Meadow → eastern Emigrant Lake", "8.89 mi", "+1,210 ft", "−1,035 ft", "Emigrant Lake (east)", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Lake (filter)", "morales swimming spot; Buck Lake on route"],
+        ["Day 3", "Mon Jul 27", "Spring Meadow → eastern Emigrant Lake", "8.89 mi", "+1,210 ft", "−1,035 ft", "Emigrant Lake (east)", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Lake (filter)", "morale swimming spot; Buck Lake on route"],
         ["Day 4", "Tue Jul 28", "Emigrant Lake → Grizzly Peak Base Camp", "6.59 mi", "+1,575 ft", "−742 ft", "Grizzly Peak Base Camp", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Lake (filter)", "Mule drop refilled; cooler alpine camp"],
         ["Day 5", "Wed Jul 29", "Grizzly Peak → Big Sam → Kennedy Lake", "8.46 mi", "+1,428 ft", "−3,238 ft", "South Kennedy Lake", "Bkfst · Snacks · Lunch · Dinner · Dessert", "Creek (filter)", "Climb Big Sam (10,804 ft); long descent"],
         ["Day 6", "Thu Jul 30", "Kennedy Lake → Kennedy Meadows (Exit)", "8.50 mi", "+0 ft", "−1,517 ft", "Exit — Trailhead", "Bkfst · Snacks · Lunch", "Creek/Tap", "Walk out valley; celebrate at trailhead"],
@@ -853,13 +853,13 @@ def create_big_sam_menu():
         
     water_data = [
         ["Kennedy Meadows Trailhead", "Pack Station tap", "Reliable", "Fill all bottles. Carry 2-3 L per person."],
-        ["Relief Reservoir", "Reservoir outlet", "Reliable", "Morale boost lunch stop. Filter all water."],
-        ["Lower Relief Valley Camp", "Creek / Spring", "Reliable", "morales swimming spot side trip nearby."],
-        ["Spring Meadow Camp", "Meadow stream", "Reliable", "Morale boost meadow camp. Filter water."],
+        ["Relief Reservoir", "Reservoir outlet", "Reliable", "morale boost lunch stop. Filter all water."],
+        ["Lower Relief Valley Camp", "Creek / Spring", "Reliable", "morale swimming spot side trip nearby."],
+        ["Spring Meadow Camp", "Meadow stream", "Reliable", "morale boost meadow camp. Filter water."],
         ["Emigrant Lake Camp", "Lake water", "Reliable", "Marquee camp. Swim spot. Filter before drinking."],
         ["Grizzly Peak Base Camp", "Alpine lake", "Reliable", "High alpine water. Cooler nights. Filter."],
-        ["Kennedy Lake Camp", "Kennedy Creek", "Reliable", "morales swimming spot. Filter."],
-        ["Kennedy Meadows Exit", "Pack Station tap", "Reliable", "Morale boost finish. Walk out valley."]
+        ["Kennedy Lake Camp", "Kennedy Creek", "Reliable", "morale swimming spot. Filter."],
+        ["Kennedy Meadows Exit", "Pack Station tap", "Reliable", "morale boost finish. Walk out valley."]
     ]
     
     for r_idx, row_data in enumerate(water_data, start=42):
@@ -938,7 +938,7 @@ def create_big_sam_menu():
         ("", "SNACKS", "Krave Sea Salt Original Beef Jerky", 3, 4, 3, "hip-belt pocket; nut-free", False),
         ("", "SNACKS", "Clif Bar – Crunchy PB", 3, 4, 3, "hip-belt pocket; ⚠ NUT", False),
         ("", "SNACKS", "Gatorade Powder Pack", 3, 4, 3, "hip-belt pocket; electrolytes", False),
-        ("", "SNACKS", "Peak Refuel – Fudge Brownie Bites", 2, 2, 2, "morales afternoon snack; nut-free", False),
+        ("", "SNACKS", "Peak Refuel – Fudge Brownie Bites", 2, 2, 2, "morale afternoon snack; nut-free", False),
         ("", "LUNCH", "Columbus Hard Salami (packet)", 3, 4, 3, "no cook; nut-free", False),
         ("", "LUNCH", "Wasa Crispbread", 3, 4, 3, "no cook; nut-free", False),
         ("", "LUNCH", "Flour Tortillas", 6, 8, 6, "lunch wraps", False),
@@ -999,7 +999,7 @@ def create_big_sam_menu():
         ("", "SNACKS", "Krave Sea Salt Original Beef Jerky", 3, 4, 3, "hip-belt pocket; nut-free", False),
         ("", "SNACKS", "Clif Bar – Crunchy PB", 3, 4, 3, "hip-belt pocket; ⚠ NUT", False),
         ("", "SNACKS", "Gatorade Powder Pack", 3, 4, 3, "hip-belt pocket; electrolytes", False),
-        ("", "SNACKS", "Peak Refuel – Fudge Brownie Bites", 2, 2, 2, "morales afternoon snack; nut-free", False),
+        ("", "SNACKS", "Peak Refuel – Fudge Brownie Bites", 2, 2, 2, "morale afternoon snack; nut-free", False),
         ("", "LUNCH", "Columbus Hard Salami (packet)", 3, 4, 3, "no cook; nut-free", False),
         ("", "LUNCH", "Wasa Crispbread", 3, 4, 3, "no cook; nut-free", False),
         ("", "LUNCH", "Flour Tortillas", 6, 8, 6, "lunch wraps", False),
@@ -1119,15 +1119,12 @@ def create_big_sam_menu():
             col_letter = get_column_letter(col[0].column)
             for cell in col:
                 val_str = str(cell.value or '')
-                # If cell is merged, ignore its width calculation to avoid stretching columns
                 if type(cell).__name__ == 'MergedCell':
                     continue
-                # Split by newline and check max length of any line
                 lines = val_str.split('\n')
                 for line in lines:
                     if len(line) > max_len:
                         max_len = len(line)
-            # overview and other title columns don't stretch column A
             if ws.title == "Overview" and col_letter == "A":
                 ws.column_dimensions[col_letter].width = 32
             else:

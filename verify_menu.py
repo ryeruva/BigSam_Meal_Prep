@@ -24,15 +24,28 @@ def run_verification():
     ws_sl = wb["Shopping List"]
     errors = 0
     
-    # Check rows 4 to 31
-    for r in range(4, 32):
+    # Dynamically find the end row of the shopping list items
+    sl_end_row = None
+    for r in range(4, ws_sl.max_row + 1):
+        val = ws_sl.cell(row=r, column=2).value
+        if val == "Grand Total":
+            sl_end_row = r - 1
+            break
+    if sl_end_row is None:
+        print("Error: Could not find 'Grand Total' row in Shopping List")
+        sl_end_row = 31 # fallback
+        
+    print(f"Detected Shopping List items end at row {sl_end_row}")
+
+    # Check rows 4 to sl_end_row
+    for r in range(4, sl_end_row + 1):
         item_name = ws_sl.cell(row=r, column=2).value
-        qty_p1_sc3 = ws_sl.cell(row=r, column=3).value
-        qty_p1_sc4 = ws_sl.cell(row=r, column=4).value
-        qty_p1_ad3 = ws_sl.cell(row=r, column=5).value
-        qty_p2_sc3 = ws_sl.cell(row=r, column=6).value
-        qty_p2_sc4 = ws_sl.cell(row=r, column=7).value
-        qty_p2_ad3 = ws_sl.cell(row=r, column=8).value
+        qty_p1_sc3 = ws_sl.cell(row=r, column=3).value or 0
+        qty_p1_sc4 = ws_sl.cell(row=r, column=4).value or 0
+        qty_p1_ad3 = ws_sl.cell(row=r, column=5).value or 0
+        qty_p2_sc3 = ws_sl.cell(row=r, column=6).value or 0
+        qty_p2_sc4 = ws_sl.cell(row=r, column=7).value or 0
+        qty_p2_ad3 = ws_sl.cell(row=r, column=8).value or 0
         group_total = ws_sl.cell(row=r, column=9).value
         price = ws_sl.cell(row=r, column=10).value
         cost_sc3 = ws_sl.cell(row=r, column=11).value
@@ -41,7 +54,7 @@ def run_verification():
         cost_group = ws_sl.cell(row=r, column=14).value
         weight_oz = ws_sl.cell(row=r, column=15).value
         weight_group = ws_sl.cell(row=r, column=16).value
-        notes = ws_sl.cell(row=r, column=17).value
+        notes = ws_sl.cell(row=r, column=17).value or ""
         
         # Verify Group Total formula
         is_allergy_item = "allergy scout" in notes.lower() or "88 acres" in item_name.lower() or "once again" in item_name.lower() or "honey stinger" in item_name.lower()
@@ -88,10 +101,10 @@ def run_verification():
     print(f"Scout 4-ppl Cost Cell D35: {cost_sc4_formula}")
     print(f"Group Total Cost Cell E35: {cost_total_formula}")
     
-    expected_cost_adult = "=SUM('Shopping List'!M$4:M$31)"
-    expected_cost_sc3 = "=SUM('Shopping List'!K$4:K$31)"
-    expected_cost_sc4 = "=SUM('Shopping List'!L$4:L$31)"
-    expected_cost_total = "=SUM('Shopping List'!N$4:N$31)"
+    expected_cost_adult = f"=SUM('Shopping List'!M$4:M${sl_end_row})"
+    expected_cost_sc3 = f"=SUM('Shopping List'!K$4:K${sl_end_row})"
+    expected_cost_sc4 = f"=SUM('Shopping List'!L$4:L${sl_end_row})"
+    expected_cost_total = f"=SUM('Shopping List'!N$4:N${sl_end_row})"
     
     if cost_adult_formula != expected_cost_adult:
         print(f"Overview Error: B35 is {cost_adult_formula}, expected {expected_cost_adult}")
@@ -118,10 +131,10 @@ def run_verification():
     print(f"Scout 4-ppl Max Carry Weight Cell D37: {weight_sc4_formula}")
     print(f"Group Max Carry Weight Cell E37: {weight_total_formula}")
     
-    expected_weight_adult = "=SUMPRODUCT('Shopping List'!E$4:E$31,'Shopping List'!O$4:O$31)/16"
-    expected_weight_sc3 = "=SUMPRODUCT('Shopping List'!C$4:C$31,'Shopping List'!O$4:O$31)/16"
-    expected_weight_sc4 = "=SUMPRODUCT('Shopping List'!D$4:D$31,'Shopping List'!O$4:O$31)/16"
-    expected_weight_total = "=SUMPRODUCT(3*'Shopping List'!C$4:C$31+1*'Shopping List'!D$4:D$31+2*'Shopping List'!E$4:E$31,'Shopping List'!O$4:O$31)/16"
+    expected_weight_adult = f"=SUMPRODUCT('Shopping List'!E$4:E${sl_end_row},'Shopping List'!O$4:O${sl_end_row})/16"
+    expected_weight_sc3 = f"=SUMPRODUCT('Shopping List'!C$4:C${sl_end_row},'Shopping List'!O$4:O${sl_end_row})/16"
+    expected_weight_sc4 = f"=SUMPRODUCT('Shopping List'!D$4:D${sl_end_row},'Shopping List'!O$4:O${sl_end_row})/16"
+    expected_weight_total = f"=SUMPRODUCT(3*'Shopping List'!C$4:C${sl_end_row}+1*'Shopping List'!D$4:D${sl_end_row}+2*'Shopping List'!E$4:E${sl_end_row},'Shopping List'!O$4:O${sl_end_row})/16"
     
     if weight_adult_formula != expected_weight_adult:
         print(f"Overview Error: B37 is {weight_adult_formula}, expected {expected_weight_adult}")
